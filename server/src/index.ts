@@ -2,13 +2,15 @@ import type { BunFile } from "bun";
 import { Elysia } from "elysia";
 import path from "path";
 import esbuild from "esbuild";
-import { error } from "console";
+import { Logestic } from "logestic";
 
 const component_base_path: string = path.resolve("components/");
 
 const bun_filecache = new Map<string, string>();
 
-async function parse_component_request(request_components: string): Promise<string[]> {
+async function parse_component_request(
+	request_components: string,
+): Promise<string[]> {
 	const components = request_components.split(",");
 	const result: string[] = [];
 
@@ -22,9 +24,9 @@ async function parse_component_request(request_components: string): Promise<stri
 
 		let js_file = path.join(component_path, `${component_name}.js`);
 
-        if ((await Bun.file(js_file).exists()) === false){
-            throw new Error(`Could not find component '${component_name}'.`);
-        }
+		if ((await Bun.file(js_file).exists()) === false) {
+			throw new Error(`Could not find component '${component_name}'.`);
+		}
 
 		bun_filecache.set(component_name, js_file);
 		result.push(js_file);
@@ -38,7 +40,7 @@ const bundle_cache_file_paths = new Map<number | bigint, string>();
 async function pack_and_serve_components(
 	requested_components: string,
 	minify: boolean = false,
-): Promise<BunFile | ReturnType<typeof error>> {
+): Promise<BunFile> {
 	const all_component_file_paths: string[] =
 		await parse_component_request(requested_components);
 
@@ -73,7 +75,7 @@ async function pack_and_serve_components(
 
 	const bundled_file = Bun.file(outfile_path);
 	if ((await bundled_file.exists()) === false) {
-		return error(404, "Error bundling JS files! File not found!");
+		throw new Error("Error bundling JS files! File not found!");
 	}
 
 	return bundled_file;
@@ -83,16 +85,23 @@ function index() {
 	return "hello, index!";
 }
 
-const elysia = new Elysia();
-elysia
+interface QueryParams {
+	components?: string;
+	minify?: string;
+}
+
+const app = new Elysia()
+	.use(Logestic.preset("common"))
 	.get("/", index)
 	.get(
 		"/",
-		({ query }) => {
+		({ query }: { query: QueryParams }) => {
 			const components = query.components;
 
 			if (components === undefined) {
-				return error("Error, components must be defined in uri path!");
+				throw new Error(
+					"Error, components must be defined in uri path!",
+				);
 			}
 
 			return pack_and_serve_components(
@@ -101,7 +110,8 @@ elysia
 			);
 		},
 		{},
-	)
-	.listen(3000);
+	);
 
-elysia.listen(3000);
+app.listen(3000, () => {
+	console.log("Server running on port 3000");
+});

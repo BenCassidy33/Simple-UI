@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@grotto/logysia": "^0.1.6",
+    "logestic": "^1.2.4"
+  }
+}
