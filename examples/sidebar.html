@@ -1,0 +1,38 @@
+<html>
+    <head></head>
+    <body>
+        <bui-sidebar
+            header-selector="#sidebar-header"
+            hovering="true"
+            collapseable="true"
+            >
+            <bui-sidebar-header>
+                <h3>Company Name</h3>
+                <img src="logo" alt"Company Name" />
+            </bui-sidebar-header>
+
+            <bui-sidebar-section
+                collapsible="false"
+                label-selector="#section-one-label"
+                >
+                <bui-sidebar-section-header id="section-one-label"></bui-sidebar-section-header>
+                <div onclick="changeMainContent(dashboard)">
+                    Dashboard
+                </div>
+                <div onclick="changeMainContent(team)">
+                    Team
+                </div>
+                <div onclick="changeMainContent(breakdowns)">
+                    Breakdowns
+                </div>
+            </bui-sidebar-section>
+
+            <bui-sidebar-section collapsible="true" label-selector="#section-two-label">
+                <bui-sidebar-header id="section-two-label">Data and Documents</bui-sidebar-header>
+                <div></div>
+            </bui-sidebar-section>
+
+            <div id="main_content"></div>
+        </bui-sidebar>
+    </body>
+</html>

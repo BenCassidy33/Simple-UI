@@ -4,11 +4,11 @@ function build_link(components, min = false) {
 
 const link_text = document.getElementById("link-text");
 const component_picker = document.getElementById("component-picker");
-const copy_button = document.getElementById("copy-button")
+const copy_button = document.getElementById("copy-button");
 
 copy_button.addEventListener("click", () => {
-    navigator.clipboard.writeText(link_text.innerText)
-})
+	navigator.clipboard.writeText(link_text.innerText);
+});
 
 const all_components = ["Table", "Card", "Alert"];
 
@@ -21,7 +21,6 @@ for (const component of all_components) {
     `;
 	component_picker.innerHTML += html;
 }
-
 
 function render_link() {
 	let components = component_picker.querySelectorAll("input");
@@ -42,4 +41,6 @@ component_picker.addEventListener("change", (event) => {
 	}
 });
 
-render_link();
+(function () {
+	render_link();
+})();
