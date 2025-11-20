@@ -1,7 +1,7 @@
 function build_link(components, min = false) {
 	return `
         <code>
-            <span>&lt</span><span style="color: var(--code-keyword);">script</span><span style="color: var(--code-attribute);"> src</span><span>=</span><span style="color: var(--code-string);">"http://localhost:3000/dist/?components=${components}&minify=${min}"</span><span>&gt&lt</span><span style="color: var(--code-keyword);">script</span><span>&gt</span>
+            <span>&lt</span><span style="color: var(--code-keyword);">script</span><span style="color: var(--code-attribute);"> src</span><span>=</span><span style="color: var(--code-string);">"http://localhost:3000/dist/?components=${components}&minify=${min}"</span><span>&gt&lt/</span><span style="color: var(--code-keyword);">script</span><span>&gt</span>
         </code>
     `;
 }

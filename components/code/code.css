@@ -1,0 +1,12 @@
+bui-code {
+	white-space: pre;
+}
+pre {
+	font-family: monospace;
+	background: #1e1e1e; /* or your theme */
+	color: #f5f5f5;
+	padding: 1em;
+	border-radius: 6px;
+	overflow-x: auto;
+	white-space: pre; /* preserves newlines and spaces */
+}
