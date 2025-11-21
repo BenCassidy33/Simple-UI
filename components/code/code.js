@@ -4,7 +4,12 @@ import "./code.css";
 
 // BUI_CODE element always assumes that the code is written in plain text as the child of the element!
 class BUI_CODE extends HTMLElement {
-	static observedAttributes = ["language", "theme", "highlighter"];
+	static observedAttributes = [
+		"language",
+		"theme",
+		"highlighter",
+		"linenumbers",
+	];
 
 	constructor() {
 		super();
@@ -16,6 +21,7 @@ class BUI_CODE extends HTMLElement {
 		this._theme = "";
 		this._highlighter = "";
 		this._observer = null;
+		this._linenumbers = false;
 	}
 
 	_loadHLJS(callback) {
@@ -51,6 +57,8 @@ class BUI_CODE extends HTMLElement {
 		this._language = this.getAttribute("language") || "javascript";
 		this._theme = this.getAttribute("theme") || "none";
 		this._highlighter = this._highlight;
+		this._linenumbers =
+			this.getAttribute("linenumbers") === "true" ? true : false;
 
 		this._render();
 	}
@@ -71,6 +79,20 @@ class BUI_CODE extends HTMLElement {
 				.replace(/&/g, "&amp;")
 				.replace(/</g, "&lt;")
 				.replace(/>/g, "&gt;");
+
+		this._code = this._code.split("\n");
+		let lineno = 1;
+		for (const line of this._code) {
+			if (line.trim() === "") {
+				continue;
+			}
+			this._code[lineno] =
+				`${this._linenumbers ? lineno + " " : ""}${this._code[lineno]}`;
+			lineno++;
+		}
+
+		this._code[lineno] = this._code[lineno].trim();
+		this._code = this._code.join("\n");
 
 		this._loadHLJS(() => {
 			this._highlight(escapeHTML(this._code));

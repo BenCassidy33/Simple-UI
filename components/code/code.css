@@ -1,6 +1,7 @@
 bui-code {
 	white-space: pre;
 }
+
 pre {
 	font-family: monospace;
 	background: #1e1e1e; /* or your theme */

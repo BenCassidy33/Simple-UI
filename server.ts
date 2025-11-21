@@ -87,43 +87,49 @@ interface QueryParams {
 	minify?: string;
 }
 
-const app = new Elysia()
-	.use(Logestic.preset("common"))
-	.use(staticPlugin({ prefix: "/", indexHTML: true }))
-	.get(
-		"/dist",
-		({ query }: { query: QueryParams }) => {
-			const components = query.components;
+function main() {
+	const app = new Elysia()
+		.use(Logestic.preset("common"))
+		.use(staticPlugin({ prefix: "/", indexHTML: true }))
+		.get(
+			"/dist",
+			({ query }: { query: QueryParams }) => {
+				const components = query.components;
 
-			if (components === undefined) {
-				throw new Error(
-					"Error, components must be defined in uri path!",
+				if (components === undefined) {
+					throw new Error(
+						"Error, components must be defined in uri path!",
+					);
+				}
+
+				return pack_and_serve_components(
+					query.components!,
+					query.minify?.toLowerCase() === "true" ? true : false,
 				);
-			}
+			},
+			{},
+		)
+		.get(
+			"/themes/:theme",
+			async ({ params }: { params: { theme: string } }) => {
+				const theme_file = Bun.file(`./themes/${params.theme}`);
+				if ((await theme_file.exists()) === false) {
+					throw new Error("Theme not found!");
+				}
 
-			return pack_and_serve_components(
-				query.components!,
-				query.minify?.toLowerCase() === "true" ? true : false,
-			);
-		},
-		{},
-	)
-	.get(
-		"/themes/:theme",
-		async ({ params }: { params: { theme: string } }) => {
-			const theme_file = Bun.file(`./themes/${params.theme}`);
-			if ((await theme_file.exists()) === false) {
-				throw new Error("Theme not found!");
-			}
+				return new Response(await theme_file.arrayBuffer(), {
+					headers: {
+						"Content-Type": "text/css",
+					},
+				});
+			},
+		);
 
-			return new Response(await theme_file.arrayBuffer(), {
-				headers: {
-					"Content-Type": "text/css",
-				},
-			});
-		},
-	);
+	app.listen(3000, () => {
+		console.log("Server running on port 3000");
+	});
+}
 
-app.listen(3000, () => {
-	console.log("Server running on port 3000");
-});
+if (import.meta.main) {
+	main();
+}
