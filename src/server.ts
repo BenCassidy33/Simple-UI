@@ -5,7 +5,7 @@ import path from "path";
 import esbuild from "esbuild";
 import { Logestic } from "logestic";
 
-const component_base_path: string = path.resolve("components/");
+const component_base_path: string = path.resolve("./src/components/");
 
 const bun_filecache = new Map<string, string>();
 
@@ -52,6 +52,7 @@ async function pack_and_serve_components(
 		return Bun.file(filepath);
 	}
 
+    // TODO: REPLACE ALL CACHING WITH REDIS
 	const outfile_path = `./dist/components/${hash}${minify ? ".min" : ""}.js`;
 
 	let js_code = "";
@@ -64,7 +65,7 @@ async function pack_and_serve_components(
 	await esbuild.build({
 		stdin: {
 			contents: js_code,
-			resolveDir: "./components/",
+			resolveDir: "./src/components/",
 		},
 		outfile: outfile_path,
 		bundle: true,
@@ -88,42 +89,46 @@ interface QueryParams {
 }
 
 function main() {
-	const app = new Elysia()
-		.use(Logestic.preset("common"))
-		.use(staticPlugin({ prefix: "/", indexHTML: true }))
-		.get(
-			"/dist",
-			({ query }: { query: QueryParams }) => {
-				const components = query.components;
+	const app = new Elysia();
 
-				if (components === undefined) {
-					throw new Error(
-						"Error, components must be defined in uri path!",
-					);
-				}
+	app.use(Logestic.preset("common")).use(
+		staticPlugin({ assets: "./src/public", prefix: "/", indexHTML: true  }),
+	);
 
-				return pack_and_serve_components(
-					query.components!,
-					query.minify?.toLowerCase() === "true" ? true : false,
+	app.get(
+		"/dist",
+		({ query }: { query: QueryParams }) => {
+			const components = query.components;
+
+			if (components === undefined) {
+				throw new Error(
+					"Error, components must be defined in uri path!",
 				);
-			},
-			{},
-		)
-		.get(
-			"/themes/:theme",
-			async ({ params }: { params: { theme: string } }) => {
-				const theme_file = Bun.file(`./themes/${params.theme}`);
-				if ((await theme_file.exists()) === false) {
-					throw new Error("Theme not found!");
-				}
+			}
 
-				return new Response(await theme_file.arrayBuffer(), {
-					headers: {
-						"Content-Type": "text/css",
-					},
-				});
-			},
-		);
+			return pack_and_serve_components(
+				query.components!,
+				query.minify?.toLowerCase() === "true" ? true : false,
+			);
+		},
+		{},
+	);
+
+	app.get(
+		"/themes/:theme",
+		async ({ params }: { params: { theme: string } }) => {
+			const theme_file = Bun.file(`./src/themes/${params.theme}`);
+			if ((await theme_file.exists()) === false) {
+				throw new Error("Theme not found!");
+			}
+
+			return new Response(await theme_file.arrayBuffer(), {
+				headers: {
+					"Content-Type": "text/css",
+				},
+			});
+		},
+	);
 
 	app.listen(3000, () => {
 		console.log("Server running on port 3000");
