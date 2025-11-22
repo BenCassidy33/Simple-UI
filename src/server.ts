@@ -92,7 +92,7 @@ function main() {
 	const app = new Elysia();
 
 	app.use(Logestic.preset("common")).use(
-		staticPlugin({ assets: "./src/public", prefix: "/", indexHTML: true  }),
+		staticPlugin({ prefix: "/", indexHTML: true  }),
 	);
 
 	app.get(
