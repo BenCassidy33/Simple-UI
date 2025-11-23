@@ -2,18 +2,29 @@ function build_link(components, min = false) {
 	return `
         <code>
             <span>&lt</span><span style="color: var(--code-keyword);">script</span><span style="color: var(--code-attribute);"> src</span><span>=</span><span style="color: var(--code-string);">"http://localhost:3000/dist/?components=${components}&minify=${min}"</span><span>&gt&lt/</span><span style="color: var(--code-keyword);">script</span><span>&gt</span>
-        </code>
+            <br>
+            <span>&lt</span><span style="color: var(--code-keyword);">link</span>
+            <span style="color: var(--code-attribute);"> rel</span><span>=</span><span style="color: var(--code-string);">"stylesheet"</span>
+            <span style="color: var(--code-attribute);"> href</span><span>=</span>
+            <span style="color: var(--code-string);">"http://localhost:3000/dist/?components=${components}"</span>
+            <span>&gt</span>>
+        </code            
     `;
 }
 
 const link_text = document.getElementById("link-text");
 const component_picker = document.getElementById("component-picker");
 const copy_button = document.getElementById("copy-button");
-const quick_start = document.getElementById("quick-start")
-const link_builder = document.getElementById("link-builder")
+const quick_start = document.getElementById("quick-start");
+const link_builder = document.getElementById("link-builder");
 
 quick_start.addEventListener("click", () => {
-    link_builder.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });})
+	link_builder.scrollIntoView({
+		behavior: "smooth",
+		block: "center",
+		inline: "nearest",
+	});
+});
 
 copy_button.addEventListener("click", () => {
 	navigator.clipboard.writeText(link_text.innerText);
