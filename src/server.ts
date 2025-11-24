@@ -1,8 +1,9 @@
 import { Elysia } from "elysia";
 import { staticPlugin } from "@elysiajs/static";
-import { Logestic } from "logestic";
+import { Logestic, type LogesticOptions } from "logestic";
 import path from "path";
 import { bundle_components, bundle_styles } from "./bundle";
+import type { BunFile } from "bun";
 
 export const DEBUG = true;
 
@@ -17,7 +18,6 @@ export async function parse_items_request(
 
 	for (const component_name of components) {
 		const component_path = path.join(component_base_path, component_name);
-
 
 		let file = path.join(
 			component_path,
@@ -46,9 +46,7 @@ interface StyleQueryParams {
 function main() {
 	const app = new Elysia();
 
-	app.use(Logestic.preset("common")).use(
-		staticPlugin({ prefix: "/", indexHTML: true }),
-	);
+	app.use(Logestic.preset("common")).use(staticPlugin({ prefix: "/", indexHTML: true }));
 
 	app.get(
 		"/dist",
