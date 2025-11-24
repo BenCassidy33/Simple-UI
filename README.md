@@ -1,4 +1,4 @@
-# BUI: A simpler and better UI Library
+# SUI: A Simpler And Better UI Library
 
 Inspired by shadcn/ui, designed to be used with plain HTML and minimal JavaScript. (Work in progress)
 
@@ -14,7 +14,7 @@ Components Implemented:
 Run by using:
 
 ```bash
-bun run server.ts
+bun run src/server.ts
 ```
 
 Note: Code component uses [hljs](highlightjs.org)
