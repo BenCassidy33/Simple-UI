@@ -13,8 +13,6 @@
     "@elysiajs/static": "^1.4.7",
     "elysia": "^1.4.16",
     "esbuild": "^0.27.0",
-    "esbuild-plugin-css-modules": "https://github.com/koluch/esbuild-plugin-css-modules",
-    "esbuild-style-plugin": "^1.6.3",
     "logestic": "^1.2.4"
   }
 }

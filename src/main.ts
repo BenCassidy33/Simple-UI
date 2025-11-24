@@ -1,11 +1,9 @@
 import { Elysia } from "elysia";
 import { staticPlugin } from "@elysiajs/static";
-import { Logestic, type LogesticOptions } from "logestic";
+import { Logestic } from "logestic";
 import path from "path";
 import { bundle_components, bundle_styles } from "./bundle";
-import type { BunFile } from "bun";
-
-export const DEBUG = true;
+import { redis, RedisClient } from "bun";
 
 const component_base_path: string = path.resolve("./src/components/");
 
@@ -43,10 +41,19 @@ interface StyleQueryParams {
 	styles?: string;
 }
 
-function main() {
+async function main() {
+	const redis_client = new RedisClient()
+    await redis_client.connect();
+
+    if (!redis_client.connected) {
+        console.log("Failed to connect to redis!")
+    }
+
 	const app = new Elysia();
 
-	app.use(Logestic.preset("common")).use(staticPlugin({ prefix: "/", indexHTML: true }));
+	app.use(Logestic.preset("common")).use(
+		staticPlugin({ prefix: "/", indexHTML: true }),
+	);
 
 	app.get(
 		"/dist",
@@ -95,8 +102,10 @@ function main() {
 	app.listen(3000, () => {
 		console.log("Server running on port 3000");
 	});
+
+    redis_client.close()
 }
 
 if (import.meta.main) {
-	main();
+	await main();
 }

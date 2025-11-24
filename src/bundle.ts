@@ -1,9 +1,7 @@
 import type { BunFile } from "bun";
-import { DEBUG, parse_items_request } from "./server";
+import { parse_items_request } from "./main";
 import esbuild from "esbuild";
 import path from "path";
-
-const bundle_cache_file_paths = new Map<number | bigint, string>();
 
 export async function bundle_components(
 	requested_components: string,
@@ -14,12 +12,12 @@ export async function bundle_components(
 
 	const hash = Bun.hash(requested_components);
 
-	if (!DEBUG) {
-		if (bundle_cache_file_paths.has(hash)) {
-			let filepath = bundle_cache_file_paths.get(hash)!;
-			return Bun.file(filepath);
-		}
-	}
+	// if (!DEBUG) {
+	// 	if (bundle_cache_file_paths.has(hash)) {
+	// 		let filepath = bundle_cache_file_paths.get(hash)!;
+	// 		return Bun.file(filepath);
+	// 	}
+	// }
 
 	// TODO: REPLACE ALL CACHING WITH REDIS
 	const outfile_path = `./dist/components/${hash}${minify ? ".min" : ""}.js`;
