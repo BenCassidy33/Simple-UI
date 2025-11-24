@@ -7,7 +7,6 @@ import { bundle_components, bundle_styles } from "./bundle";
 export const DEBUG = true;
 
 const component_base_path: string = path.resolve("./src/components/");
-const bun_filecache = new Map<string, string>();
 
 export async function parse_items_request(
 	request_components: string,
@@ -19,21 +18,16 @@ export async function parse_items_request(
 	for (const component_name of components) {
 		const component_path = path.join(component_base_path, component_name);
 
-		if (bun_filecache.has(component_name)) {
-			result.push(bun_filecache.get(component_name)!);
-			continue;
-		}
 
 		let file = path.join(
 			component_path,
-			`${component_name}.${css === false ? "js" : "css"}`,
+			`${component_name}.${css ? "css" : "js"}`,
 		);
 
 		if ((await Bun.file(file).exists()) === false) {
 			throw new Error(`Could not find component '${component_name}'.`);
 		}
 
-		bun_filecache.set(component_name, file);
 		result.push(file);
 	}
 

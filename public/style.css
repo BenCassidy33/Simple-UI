@@ -84,6 +84,7 @@ body {
 	height: 5vh;
     width: fit-content;
     padding: 5px;
+    height: fit-content;
 }
 
 #link-text {

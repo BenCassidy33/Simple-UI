@@ -5,7 +5,7 @@ function build_link(components, min = false) {
             <br>
             <span>&lt</span><span style="color: var(--code-keyword);">link</span>
             <span style="color: var(--code-attribute);">rel</span><span>=</span><span style="color: var(--code-string);">"stylesheet"</span>
-            <span style="color: var(--code-attribute);">href</span><span>=</span><span style="color: var(--code-string);">"http://localhost:3000/dist/?components=${components}"</span><span>/&gt</span>
+            <span style="color: var(--code-attribute);">href</span><span>=</span><span style="color: var(--code-string);">"http://localhost:3000/styles/?styles=${components}"</span><span>/&gt</span>
         </code            
     `;
 }

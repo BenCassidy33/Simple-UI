@@ -52,16 +52,22 @@ export async function bundle_components(
 
 export async function bundle_styles(
 	requested_styles: string,
-): Promise<string> {
-	const all_style_paths: string[] =
-		await parse_items_request(requested_styles, true);
+): Promise<Response> {
+	const all_style_paths: string[] = await parse_items_request(
+		requested_styles,
+		true,
+	);
 
-    let styles = ""
+	let styles = "";
 
-    for (const file_path of all_style_paths) {
-        let style_content = await Bun.file(file_path).text()
-        styles += style_content
-    }
+	for (const file_path of all_style_paths) {
+		let style_content = await Bun.file(file_path).text();
+		styles += style_content;
+	}
 
-    return styles
+	return new Response(styles, {
+		headers: {
+			"Content-Type": "text/css; charset=utf-8",
+		},
+	});
 }
